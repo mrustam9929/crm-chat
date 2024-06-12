@@ -1,0 +1,22 @@
+{
+  "settings": {
+    "search": true,
+    "menuWidth": 15,
+    "smallerScrollbars": false,
+    "showTimestamp": true,
+    "showStd": false,
+    "showAllContainers": true,
+    "softWrap": true,
+    "collapseNav": false,
+    "automaticRedirect": true,
+    "size": "medium",
+    "compact": false,
+    "lightTheme": "dark",
+    "hourStyle": "24",
+    "dateLocale": "en-CA",
+    "locale": "ru"
+  },
+  "pinned": [],
+  "releaseSeen": "v6.2.6",
+  "collapsedGroups": []
+}

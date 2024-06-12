@@ -1,0 +1,7 @@
+users:
+  # "admin" here is username
+  admin:
+    name: "Admin"
+    # Just sha-256 which can be computed with "echo -n password | shasum -a 256"
+    password: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+#    email: me@email.net

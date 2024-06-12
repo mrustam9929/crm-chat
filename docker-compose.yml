@@ -1,0 +1,98 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./etc/compose/src/Dockerfile
+    image: crmchat/app:latest
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn --reload"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./src:/src
+      - ./mounts/src/logs:/src/logs
+      - ./mounts/src/static:/src/static
+      - ./mounts/src/media:/src/media
+    cap_add:
+      - ALL
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8000/api/v1/docs/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  ws:
+    image: crmchat/app:latest
+    restart: unless-stopped
+    command: >
+      sh -c "daphne -b 0.0.0.0 -p 8001 core.asgi:application"
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    build:
+      context: .
+      dockerfile: etc/compose/postgres/Dockerfile
+    image: crmchat/postgres:latest
+    restart: unless-stopped
+    volumes:
+      - ./mounts/postgres/pg_data:/var/lib/postgresql/data
+      - ./mounts/postgres/backups:/backups
+      - ./mounts/postgres/logs:/var/log/postgresql
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  redis:
+    build:
+      context: .
+      dockerfile: etc/compose/redis/Dockerfile
+    image: crmchat/redis:latest
+    restart: unless-stopped
+    privileged: true
+    env_file:
+      - .env
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./mounts/redis_data:/data
+      - ./mounts/redis_conf:/conf
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+
+  dozzle:
+    build:
+      context: .
+      dockerfile: ./etc/compose/dozzle/Dockerfile
+    image: crmchat/dozzle:latest
+    restart: unless-stopped
+    environment:
+      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_BASE: /dozzle
+      DOZZLE_THEME: dark
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./etc/compose/dozzle/data:/data
+    ports:
+      - "8080:8080"

@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "lms-chat-api"
+version = "0.1.0"
+description = ""
+authors = ["Rustam <mrustam9929@gmial.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.2"
+python-dotenv = "^1.0.1"
+loguru = "^0.7.2"
+drf-yasg = "^1.21.7"
+djangorestframework = "^3.14.0"
+django-cors-headers = "^4.3.1"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^21.2.0"
+django-ckeditor-5 = "^0.2.11"
+django-filter = "^23.5"
+channels = "^4.0.0"
+channels-redis = "^4.2.0"
+daphne = "^4.1.0"
+python-keycloak = "^3.9.1"
+pyjwt = "^2.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
